@@ -83,7 +83,14 @@ private fun tunnelChecks() {
             }
         }
         originThread.join(1000)
-        rejects { Socket("127.0.0.1", boundPort) }
+        // On Linux, a blocked accept can keep the listening descriptor alive
+        // briefly after close() returns. Check bounded shutdown, closing every
+        // probe socket, rather than assuming Windows' immediate refusal.
+        val shutdownDeadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(2)
+        while (runCatching { Socket("127.0.0.1", boundPort).use { } }.isSuccess) {
+            check(System.nanoTime() < shutdownDeadline) { "Tunnel still accepts connections after shutdown" }
+            Thread.sleep(10)
+        }
     }
     TunnelServer { _, _ -> error("Rejected requests must not reach connector") }.use { tunnel ->
         Socket("127.0.0.1", tunnel.port).use { client ->

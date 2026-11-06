@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="player_rewind" type="id" />
+    <item name="player_play_pause" type="id" />
+    <item name="player_forward" type="id" />
+    <item name="player_web" type="id" />
+    <item name="player_progress" type="id" />
+    <item name="player_speed" type="id" />
+    <item name="player_quality" type="id" />
+    <item name="player_fullscreen" type="id" />
+</resources>
